@@ -16,7 +16,9 @@ export default class App extends React.Component {
         var file = new FormData();
         file.append('file', this.state.formimages, 'Form.jpg');
 
-        axios.post("/formtemplate", file);
+        axios.post("/formtemplate", file)
+        .then(d => console.log(d))
+        .catch(e => console.log(e));
     }
 
     onChangeHandler (e) {
