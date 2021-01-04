@@ -1,5 +1,5 @@
 import React from 'react';
-
+import axios from 'axios';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -8,10 +8,23 @@ export default class App extends React.Component {
             formimages: null,
         }
         this.onChangeHandler = this.onChangeHandler.bind(this);
+        this.submit = this.submit.bind(this);
+    }
+
+
+    submit() {
+        var file = new FormData();
+        file.append('file', this.state.formimages, 'Form.jpg');
+
+        axios.post("/formtemplate", file);
     }
 
     onChangeHandler (e) {
-        console.log(e.target);
+
+        this.setState({
+            formimages: e.target.files[0]
+        })
+
     }
 
 
@@ -20,6 +33,7 @@ export default class App extends React.Component {
             <div>
                 <label> Upload Image</label>
                 <input type="file" name="file" onChange={this.onChangeHandler}/>
+                <button onClick = {this.submit}>Submit</button>
             </div>
         );
     }
