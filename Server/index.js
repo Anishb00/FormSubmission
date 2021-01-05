@@ -2,7 +2,7 @@ const express = require ('express');
 const app = express();
 const PORT = 3000;
 const multer = require('multer');
-var Promise = require("bluebird");
+const Promise = require("bluebird");
 const Vision = require('@google-cloud/vision');
 const client = new Vision.ImageAnnotatorClient({
     keyFilename: 'API_key.json'
@@ -71,11 +71,37 @@ app.post('/formapplication',(req, res) => {
 
 
                 var applicantpath = './Applicants/' + req.files[i].filename;
-                var template = gettext(templatepath);
-                var applicant = gettext(applicantpath);
+                var template;
+                var applicant;
+                gettext(templatepath)
+                .then((data) => {
+                    data = data.replace(/\n/g, ' ')
+                    template = data.split(' ');
+                    return template;
+                })
+                .catch(e => console.log(e))
+                gettext(applicantpath)
+                .then((data) => {
+                    console.log(data, 'DATAAAAA');
+                    var string = data.replace(/\n/g, ' ')
+                    console.log(string, "STRIIINNNNGGG");
+                    applicant = string.split(' ');
+                    return applicant;
+                })
+                .catch(e => console.log(e))
+                .then(() => {
+                    // console.log(applicant);
+                    // console.log(template);
+                    var result = [];
+                    for(var i = 0; i < applicant.length; i++) {
+                        if(template.indexOf(applicant[i]) === -1) {
+                            result.push(applicant[i]);
+                        }
+                    }
+                    console.log(result);
+                })
 
-                console.log('this is the text of the template', template);
-                console.log('this is the text of the template', applicant);
+
                 //iterate over template and if you have a word who dosent exist there then add it to the banks
             }
 
@@ -88,14 +114,21 @@ app.post('/formapplication',(req, res) => {
 
 
 var gettext = (filepath) => {
-    client
-    .textDetection(filepath)
-    .then(results => {
-        console.log(results[0].fullTextAnnotation.text);
-        return results[0].fullTextAnnotation.text
-    })
-    .catch(e => console.log(e));
+    var promise = new Promise (
+        function (resolve, reject) {
+            client
+            .textDetection(filepath)
+            .then(results => {
+            // console.log(results[0].fullTextAnnotation.text);
+            resolve(results[0].fullTextAnnotation.text)
+            })
+            .catch(e => reject(e));
+        }
+    )
+    return promise
+
 }
+
 
 
 app.listen(PORT, () => console.log('Listening on port 3000'));
