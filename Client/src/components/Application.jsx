@@ -2,20 +2,20 @@
 
 
 
-class App extends React.Component {
-  constuctor (props) {
-    super(props);
-    this.state = {
+// class App extends React.Component {
+//   constuctor (props) {
+//     super(props);
+//     this.state = {
 
-    }
-  }
+//     }
+//   }
 
 
 
-  render(){
-    return(
-      <input type="file" name="avatar" multiple onChange={props.onChange}/>
-      <button onClick = {() => this.props.submit(this.state.formimages)}>Submit</button>
-    )
-  }
-}
+//   render(){
+//     return(
+//       <input type="file" name="avatar" multiple onChange={props.onChange}/>
+//       <button onClick = {() => this.props.submit(this.state.formimages)}>Submit</button>
+//     )
+//   }
+// }

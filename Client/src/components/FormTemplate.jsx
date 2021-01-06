@@ -20,7 +20,7 @@ class FormTemplate extends React.Component {
   }
 
   onChangeHandler (e) {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     this.setState({
         formimages: e.target.files
     }, () => console.log(this.state.formimages));

@@ -1,13 +1,14 @@
 import React from 'react';
 import axios from 'axios';
 import Formtemplate from './FormTemplate.jsx';
+import Summary from './Summary.jsx';
 
 export default class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             page: 'Choose Template',
-            formimages: null
+            newdata: null
         }
         // this.onChangeHandler = this.onChangeHandler.bind(this);
         this.submit = this.submit.bind(this);
@@ -24,7 +25,7 @@ export default class App extends React.Component {
           } else if (this.state.page === 'Send Application') {
             endpoint = "/formapplication"
         }
-        console.log('here',endpoint);
+        // console.log('here',endpoint);
         // var images = [];
         let file = new FormData();
         for(var i = 0; i < imgs.length; i ++){
@@ -33,12 +34,19 @@ export default class App extends React.Component {
         }
         // console.log(file);
         axios.post(endpoint, file)
-        .then(() => {
+        .then((d) => {
+            console.log('here');
+            if(d.data) {
+                console.log(d.data);
+                this.setState({
+                    newdata: d.data
+                })
+            }
             this.setState({
                 page: nextpg
             })
         })
-        .catch(e => console.log(e));
+        .catch(e => console.log(e))
     }
 
 
@@ -56,6 +64,7 @@ export default class App extends React.Component {
             <div>
 
                 <Formtemplate page = {this.state.page} submit = {this.submit}/>
+                <Summary data = {this.state.newdata}/>
             </div>
         );
     }

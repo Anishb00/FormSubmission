@@ -64,6 +64,7 @@ app.post('/formapplication',(req, res) => {
             res.sendStatus(400);
         } else {
             // iterate over the request files
+            var datafields = [];
             for(var i = 0; i < req.files.length; i++) {
                 //get the text from both the files
 
@@ -73,38 +74,59 @@ app.post('/formapplication',(req, res) => {
                 var applicantpath = './Applicants/' + req.files[i].filename;
                 var template;
                 var applicant;
-                gettext(templatepath)
-                .then((data) => {
-                    data = data.replace(/\n/g, ' ')
-                    template = data.split(' ');
-                    return template;
-                })
-                .catch(e => console.log(e))
                 gettext(applicantpath)
                 .then((data) => {
-                    console.log(data, 'DATAAAAA');
+                    // console.log(data, 'DATAAAAA');
                     var string = data.replace(/\n/g, ' ')
-                    console.log(string, "STRIIINNNNGGG");
+                    // console.log(string, "STRIIINNNNGGG");
                     applicant = string.split(' ');
-                    return applicant;
+
                 })
                 .catch(e => console.log(e))
                 .then(() => {
-                    // console.log(applicant);
-                    // console.log(template);
-                    var result = [];
-                    for(var i = 0; i < applicant.length; i++) {
-                        if(template.indexOf(applicant[i]) === -1) {
-                            result.push(applicant[i]);
+                    gettext(templatepath)
+                    .then((data) => {
+                        console.log('here',data);
+                        var string = data.replace(/\n/g, ' ')
+                        template = string.split(' ');
+
+                    })
+                    .catch(e => console.log(e))
+                    .then(() => {
+                        // console.log(applicant);
+                        // console.log(template);
+                        var result = [];
+                        for(var j = 0; j < applicant.length; j++) {
+                            var field = '';
+                            // if(template.indexOf(applicant[i]) === -1) {
+                            //     result.push(applicant[i]);
+                            // }
+                            console.log(template);
+                            console.log(applicant);
+                            while (template.indexOf(applicant[j]) === -1) {
+                                field+= applicant[j]
+                                j++
+                            }
+                            if(field.length > 0) {
+                                result.push(field);
+                            }
+
                         }
-                    }
-                    console.log(result);
+                        datafields.push(result);
+                        console.log(result);
+                    })
+                    .then(() => {
+                        console.log(i);
+                        if(i = req.files.length) {
+                            res.send(datafields);
+                        }
+                    })
                 })
+
 
 
                 //iterate over template and if you have a word who dosent exist there then add it to the banks
             }
-
 
         }
     })
